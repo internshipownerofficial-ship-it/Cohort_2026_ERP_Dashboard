@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal-Internship-Cohart2026 Management Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0a0f1d',
+                        cardbg: '#111827',
+                        bordercol: '#1f2937',
+                        accentblue: '#3b82f6',
+                        accentgreen: '#10b981',
+                        accentcyan: '#06b6d4',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre, .mono { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0f1d; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+    </style>
+
+    <style id="cohort-light-erp-theme">
+      :root { color-scheme: light; }
+      body { background: #f4f7fb !important; color: #172033 !important; }
+      header, aside, .bg-cardbg, .bg-darkbg, .bg-gray-900, .bg-gray-900\/80, .bg-gray-900\/60, .bg-gray-800, .bg-gray-800\/60 { background-color: #ffffff !important; }
+      header, aside, .bg-cardbg, .border-bordercol, [class*="border-gray-"], [class*="border-blue-"], [class*="border-cyan-"] { border-color: #e2e8f0 !important; }
+      .text-white, .text-gray-100, .text-gray-200, .text-gray-300 { color: #1e293b !important; }
+      .text-gray-400, .text-gray-500 { color: #64748b !important; }
+      .bg-gray-900\/40, .bg-gray-900\/60, .bg-gray-900\/80 { background-color: #f8fafc !important; }
+      input, select, textarea { background-color: #ffffff !important; color: #172033 !important; border-color: #cbd5e1 !important; }
+      input::placeholder, textarea::placeholder { color: #94a3b8 !important; }
+      .tab-content > div, .tab-content article { scroll-margin-top: 90px; }
+      .shadow-2xl, .shadow-lg { box-shadow: 0 8px 28px rgba(15,23,42,.07) !important; }
+      .nav-btn { border-radius: 12px; }
+      .nav-btn:hover { background: #eff6ff !important; }
+      .nav-btn.bg-blue-600\/10 { background: #eaf2ff !important; color: #2563eb !important; border-color: #bfdbfe !important; }
+      .bg-gradient-to-r, .bg-gradient-to-br, .bg-gradient-to-tr { background-image: linear-gradient(120deg,#eff6ff,#ecfeff) !important; }
+      .text-cyan-400, .text-blue-400 { color: #2563eb !important; }
+      .text-emerald-400, .text-accentgreen { color: #059669 !important; }
+      .text-amber-400 { color: #b45309 !important; }
+      .text-purple-400 { color: #7c3aed !important; }
+      .rounded-2xl { border-radius: 18px; }
+      @media (max-width: 768px) { main { padding: 1rem !important; } header { padding: .85rem 1rem !important; } }
+    </style>
+
+</head>
+<body class="bg-darkbg text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-gray-900 border border-accentgreen text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-3">
+        <i class="fa-solid fa-circle-check text-accentgreen text-xl"></i>
+        <span id="toast-message" class="text-sm font-medium">Action completed successfully!</span>
+    </div>
+
+    <!-- Top Navigation Header -->
+    <header class="bg-cardbg border-b border-bordercol sticky top-0 z-40 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-cyan-500 to-blue-600 p-2.5 rounded-xl shadow-lg shadow-cyan-500/20 text-white font-bold text-lg flex items-center justify-center w-10 h-10">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg tracking-wide text-white flex items-center gap-2">
+                    Internal-Internship-Cohart2026 <span class="text-xs uppercase px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-400 border border-cyan-800">VITS Bhopal</span>
+                </h1>
+                <p class="text-xs text-gray-400">Edge AI Fellowship & Management Portal</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div class="hidden md:flex items-center space-x-3 bg-gray-900/80 px-4 py-2 rounded-xl border border-bordercol text-xs">
+                <div><span class="text-gray-400">Trainer:</span> <strong class="text-white">Prof. Ajay Shrivastava</strong></div>
+                <div class="h-4 w-px bg-gray-700"></div>
+                <div><span class="text-gray-400">Project Owner:</span> <strong class="text-cyan-400">Khushali Kolhe</strong></div>
+            </div>
+            <button onclick="exportData()" class="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-2 rounded-xl text-xs font-medium border border-bordercol transition flex items-center gap-2">
+                <i class="fa-solid fa-download"></i> <span class="hidden sm:inline">Backup Data</span>
+            </button>
+            <button onclick="resetData()" class="bg-rose-950/40 hover:bg-rose-900/60 text-rose-400 px-3 py-2 rounded-xl text-xs font-medium border border-rose-900/50 transition flex items-center gap-2" title="Reset to default">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+        </div>
+    </header>
+
+
+    <div class="mx-6 mt-4 rounded-xl border border-amber-800/70 bg-amber-950/30 px-4 py-3 text-xs text-amber-200">
+        <strong>Dashboard data note:</strong> This standalone HTML version saves changes in the browser where it is opened. Shared live updates and secure Owner/Trainer-only permissions require a connected database and authentication service.
+    </div>
+
+    <!-- Main Container Layout -->
+    <div class="flex-1 flex flex-col md:flex-row">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 bg-cardbg border-r border-bordercol p-4 flex flex-col space-y-1">
+            <div class="text-xs font-semibold text-gray-500 px-3 py-2 uppercase tracking-wider">Navigation</div>
+            
+            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition bg-blue-600/10 text-blue-400 border border-blue-500/30">
+                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                <span>Dashboard Overview</span>
+            </button>
+            
+            <button onclick="switchTab('teams')" id="nav-teams" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-users-rectangle w-5 text-center"></i>
+                <span>Teams & Rosters</span>
+            </button>
+
+            <button onclick="switchTab('fellows')" id="nav-fellows" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-user-group w-5 text-center"></i><span>Fellow Directory</span>
+            </button>
+            <button onclick="switchTab('attendance')" id="nav-attendance" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-calendar-check w-5 text-center"></i><span>Attendance</span>
+            </button>
+            <button onclick="switchTab('tasks')" id="nav-tasks" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-list-check w-5 text-center"></i><span>Tasks & Assignments</span>
+            </button>
+            <button onclick="switchTab('announcements')" id="nav-announcements" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-bullhorn w-5 text-center"></i><span>Announcements</span>
+            </button>
+
+            <button onclick="switchTab('curriculum')" id="nav-curriculum" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-book-open w-5 text-center"></i>
+                <span>Curriculum Modules</span>
+            </button>
+
+            <button onclick="switchTab('scorecard')" id="nav-scorecard" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-award w-5 text-center"></i>
+                <span>Points & Scorecard</span>
+            </button>
+
+            <button onclick="switchTab('repos')" id="nav-repos" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-brands fa-github w-5 text-center"></i>
+                <span>Repositories Tracker</span>
+            </button>
+
+            <button onclick="switchTab('dsm')" id="nav-dsm" class="nav-btn w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-sm font-medium transition text-gray-400 hover:bg-gray-800/60 hover:text-gray-200">
+                <i class="fa-solid fa-clipboard-user w-5 text-center"></i>
+                <span>DSM & Reports Log</span>
+            </button>
+
+            <div class="pt-6 mt-auto">
+                <div class="bg-gradient-to-br from-blue-950/40 to-cyan-950/40 border border-blue-900/40 p-4 rounded-xl">
+                    <div class="text-xs font-semibold text-cyan-400 mb-1 flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-info"></i> Cohart Rule
+                    </div>
+                    <p class="text-xs text-gray-300 leading-relaxed">
+                        Technical work earns higher points than promotional tasks. Threshold for premium eligibility: <strong>250 points</strong>.
+                    </p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-6 overflow-y-auto max-w-7xl mx-auto w-full">
+
+            <!-- TAB 1: DASHBOARD OVERVIEW -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Dashboard Overview</h2>
+                    <p class="text-sm text-gray-400">Welcome to Internal-Internship-Cohart2026 central command hub at VITS Bhopal.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-cardbg border border-bordercol p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Fellows</p>
+                            <h3 class="text-3xl font-bold text-white mt-1">35</h3>
+                            <span class="text-xs text-accentgreen font-medium mt-1 inline-block"><i class="fa-solid fa-arrow-up"></i> 100% Enrolled</span>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500/10 border border-blue-500/30 rounded-xl flex items-center justify-center text-blue-400 text-xl">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-cardbg border border-bordercol p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Squads</p>
+                            <h3 class="text-3xl font-bold text-white mt-1">7</h3>
+                            <span class="text-xs text-cyan-400 font-medium mt-1 inline-block"><i class="fa-solid fa-check"></i> Fully staffed</span>
+                        </div>
+                        <div class="w-12 h-12 bg-cyan-500/10 border border-cyan-500/30 rounded-xl flex items-center justify-center text-cyan-400 text-xl">
+                            <i class="fa-solid fa-people-group"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-cardbg border border-bordercol p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Total Points Logged</p>
+                            <h3 id="stat-total-points" class="text-3xl font-bold text-white mt-1">1,420</h3>
+                            <span class="text-xs text-amber-400 font-medium mt-1 inline-block"><i class="fa-solid fa-bolt"></i> Cumulative</span>
+                        </div>
+                        <div class="w-12 h-12 bg-amber-500/10 border border-amber-500/30 rounded-xl flex items-center justify-center text-amber-400 text-xl">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-cardbg border border-bordercol p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-medium text-gray-400 uppercase tracking-wider">Program Type</p>
+                            <h3 class="text-3xl font-bold text-white mt-1">Edge AI</h3>
+                            <span class="text-xs text-purple-400 font-medium mt-1 inline-block"><i class="fa-solid fa-microchip"></i> Hardware Track</span>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-500/10 border border-purple-500/30 rounded-xl flex items-center justify-center text-purple-400 text-xl">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions & Leadership -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="lg:col-span-2 bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-lg text-white flex items-center gap-2">
+                                <i class="fa-solid fa-bullhorn text-cyan-400"></i> Cohart Announcements & Guidelines
+                            </h3>
+                            <span class="text-xs text-gray-400">Active</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="p-4 bg-gray-900/60 border border-bordercol rounded-xl flex items-start space-x-3">
+                                <div class="bg-blue-600/20 text-blue-400 p-2.5 rounded-lg mt-0.5"><i class="fa-solid fa-code-commit"></i></div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">GitHub / GitLab Repository Submissions Active</h4>
+                                    <p class="text-xs text-gray-400 mt-1">All 7 squads must push their embedded code to respective repositories. Verified repos earn 70 points per solo project.</p>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-900/60 border border-bordercol rounded-xl flex items-start space-x-3">
+                                <div class="bg-emerald-600/20 text-emerald-400 p-2.5 rounded-lg mt-0.5"><i class="fa-solid fa-video"></i></div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Shrike FI Group Media & Introductory Reels</h4>
+                                    <p class="text-xs text-gray-400 mt-1">Project Owner Khushali Kolhe and Associates Kajal Patle & Devesh Kumar Shivam are coordinating official social media assets.</p>
+                                </div>
+                            </div>
+                            <div class="p-4 bg-gray-900/60 border border-bordercol rounded-xl flex items-start space-x-3">
+                                <div class="bg-amber-600/20 text-amber-400 p-2.5 rounded-lg mt-0.5"><i class="fa-solid fa-clipboard-list"></i></div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Daily StandUp Meetings (DSMs)</h4>
+                                    <p class="text-xs text-gray-400 mt-1">Scrum Masters must sync daily with Project Owner to report blockers and documentation status across repositories.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Leadership Hierarchy Card -->
+                    <div class="bg-cardbg border border-bordercol p-6 rounded-2xl flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-lg text-white mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-chess-king text-amber-400"></i> Leadership Hierarchy
+                            </h3>
+                            <ul class="space-y-4 text-xs">
+                                <li class="border-l-2 border-accentblue pl-3 py-1">
+                                    <span class="text-gray-400 block">Trainer</span>
+                                    <strong class="text-white text-sm">Prof. Ajay Shrivastava</strong>
+                                </li>
+                                <li class="border-l-2 border-accentcyan pl-3 py-1">
+                                    <span class="text-gray-400 block">Project Owner</span>
+                                    <strong class="text-cyan-400 text-sm">Khushali Kolhe</strong>
+                                </li>
+                                <li class="border-l-2 border-amber-400 pl-3 py-1">
+                                    <span class="text-gray-400 block">Associate Incharge</span>
+                                    <strong class="text-white text-sm">Kajal Patle</strong>
+                                </li>
+                                <li class="border-l-2 border-purple-400 pl-3 py-1">
+                                    <span class="text-gray-400 block">Associate Incharge</span>
+                                    <strong class="text-white text-sm">Devesh Kumar Shivam</strong>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t border-bordercol">
+                            <button onclick="switchTab('teams')" class="w-full bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl font-medium text-xs transition shadow-lg shadow-blue-500/20">
+                                View All 7 Squads & Roster
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <section class="bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <h3 class="font-bold text-lg text-white flex items-center gap-2"><i class="fa-solid fa-bullhorn text-cyan-400"></i> Latest Announcements</h3>
+                            <p class="text-xs text-gray-400 mt-1">Latest cohort notices are shown here.</p>
+                        </div>
+                        <button onclick="switchTab('announcements')" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold">Manage Announcements <i class="fa-solid fa-arrow-right ml-1"></i></button>
+                    </div>
+                    <div id="dashboard-announcement-list" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+                </section>
+            </section>
+
+            <!-- TAB 2: TEAMS & ROSTERS -->
+            <section id="tab-teams" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Teams & Rosters Management</h2>
+                        <p class="text-sm text-gray-400">Filter and explore the 7 squads comprising all 35 fellows.</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <select id="team-filter" onchange="filterTeams()" class="bg-gray-900 border border-bordercol rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500">
+                            <option value="all">All 7 Squads</option>
+                            <option value="Team 1">Team 1</option>
+                            <option value="Team 2">Team 2</option>
+                            <option value="Team 3">Team 3</option>
+                            <option value="Team 4">Team 4</option>
+                            <option value="Team 5">Team 5</option>
+                            <option value="Team 6">Team 6</option>
+                            <option value="Team 7">Team 7</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Core Leadership Summary -->
+                <div class="bg-gradient-to-r from-blue-950/40 via-cardbg to-cyan-950/40 border border-blue-500/30 p-6 rounded-2xl">
+                    <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-user-tie text-amber-400"></i> Core Cohart Leadership & Associates
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-bordercol">
+                            <span class="text-gray-400 block uppercase font-semibold text-[10px]">Trainer</span>
+                            <strong class="text-white text-sm mt-1 block">Prof. Ajay Shrivastava</strong>
+                            <span class="text-cyan-400 text-[11px] mt-0.5 block">Program Oversight</span>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-bordercol">
+                            <span class="text-gray-400 block uppercase font-semibold text-[10px]">Project Owner</span>
+                            <strong class="text-cyan-400 text-sm mt-1 block">Khushali Kolhe</strong>
+                            <span class="text-gray-300 text-[11px] mt-0.5 block">Overall Incharge & SPOC</span>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-bordercol">
+                            <span class="text-gray-400 block uppercase font-semibold text-[10px]">Associate Incharge</span>
+                            <strong class="text-white text-sm mt-1 block">Mahima Barpete</strong>
+                            <span class="text-gray-300 text-[11px] mt-0.5 block">Associate Incharge</span>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-bordercol">
+                            <span class="text-gray-400 block uppercase font-semibold text-[10px]">Operations</span>
+                            <strong class="text-white text-sm mt-1 block">Chakit Rahangdale</strong>
+                            <span class="text-gray-300 text-[11px] mt-0.5 block">Operations</span>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-bordercol">
+                            <span class="text-gray-400 block uppercase font-semibold text-[10px]">Associate Incharge</span>
+                            <strong class="text-white text-sm mt-1 block">Kajal Patle</strong>
+                            <span class="text-gray-300 text-[11px] mt-0.5 block">Operations & Team 7</span>
+                        </div>
+                        <div class="bg-gray-900/80 p-4 rounded-xl border border-bordercol">
+                            <span class="text-gray-400 block uppercase font-semibold text-[10px]">Associate Incharge</span>
+                            <strong class="text-white text-sm mt-1 block">Devesh Kumar Shivam</strong>
+                            <span class="text-gray-300 text-[11px] mt-0.5 block">Scrum & Team 2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Squads Grid -->
+                <div id="teams-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic squads injected by JS -->
+                </div>
+            </section>
+
+            <!-- TAB 3: CURRICULUM MODULES -->
+            <section id="tab-curriculum" class="tab-content hidden space-y-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-white tracking-tight">Curriculum & Modules</h2>
+                    <p class="text-sm text-gray-400">Core training modules with instructional objectives and practical examples.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Module 1 -->
+                    <div class="bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase tracking-wider font-semibold text-cyan-400 bg-cyan-950 px-3 py-1 rounded-full border border-cyan-900">Module 01</span>
+                            <span class="text-xs text-gray-400">Foundations</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Digital Primer</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Foundational digital and hardware logic awareness. Focuses on binary logic, digital hardware design principles, basic circuit behavior, and standard conventions used across embedded platforms.
+                        </p>
+                        <div class="p-3 bg-gray-900/80 border border-bordercol rounded-xl">
+                            <strong class="text-xs text-cyan-400 block mb-1"><i class="fa-solid fa-lightbulb"></i> Practical Example:</strong>
+                            <p class="text-xs text-gray-300">Using binary logic (0 and 1) or switch states (HIGH and LOW) to blink onboard LEDs and understand voltage levels in digital circuits.</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 2 -->
+                    <div class="bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase tracking-wider font-semibold text-blue-400 bg-blue-950 px-3 py-1 rounded-full border border-blue-900">Module 02</span>
+                            <span class="text-xs text-gray-400">Software</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Intro to Complete Embedded C Programming</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Master writing efficient, hardware-aware C code tailored for microcontrollers and embedded processors. Covers core C syntax, memory management, pointer manipulation, and register-level configuration.
+                        </p>
+                        <div class="p-3 bg-gray-900/80 border border-bordercol rounded-xl">
+                            <strong class="text-xs text-blue-400 block mb-1"><i class="fa-solid fa-lightbulb"></i> Practical Example:</strong>
+                            <p class="text-xs text-gray-300">Direct register configuration and bitwise operations (<code class="text-cyan-300">PORTB |= (1 << 5)</code>) to configure specific Shrike FI pins as inputs or outputs.</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 3 -->
+                    <div class="bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase tracking-wider font-semibold text-amber-400 bg-amber-950 px-3 py-1 rounded-full border border-amber-900">Module 03</span>
+                            <span class="text-xs text-gray-400">Tooling</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Linux Toolbox</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Equip participants with essential command-line tools and development environments required for modern embedded workflows, including shell scripting, process management, and GCC/GDB utilities.
+                        </p>
+                        <div class="p-3 bg-gray-900/80 border border-bordercol rounded-xl">
+                            <strong class="text-xs text-amber-400 block mb-1"><i class="fa-solid fa-lightbulb"></i> Practical Example:</strong>
+                            <p class="text-xs text-gray-300">Using WSL2 and terminal utilities (<code class="text-cyan-300">gcc</code> for compilation, <code class="text-cyan-300">git</code> for repository push, and <code class="text-cyan-300">pytest</code> for automated testing).</p>
+                        </div>
+                    </div>
+
+                    <!-- Module 4 -->
+                    <div class="bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs uppercase tracking-wider font-semibold text-purple-400 bg-purple-950 px-3 py-1 rounded-full border border-purple-900">Module 04</span>
+                            <span class="text-xs text-gray-400">Integration</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white">Demonstration of Entire Training</h3>
+                        <p class="text-xs text-gray-300 leading-relaxed">
+                            Showcase end-to-end integration by bringing together hardware, embedded software, and tooling into a live working prototype. Capstone project deployment using Vicharak hardware.
+                        </p>
+                        <div class="p-3 bg-gray-900/80 border border-bordercol rounded-xl">
+                            <strong class="text-xs text-purple-400 block mb-1"><i class="fa-solid fa-lightbulb"></i> Practical Example:</strong>
+                            <p class="text-xs text-gray-300">Building a smart sensor node or rover-drone prototype running C inference runtimes, debugged in Linux, deployed on Shrike FI.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <section class="bg-cardbg border border-bordercol p-6 rounded-2xl space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-white">Original Campus Fellowship Program PDF</h3>
+                            <p class="text-xs text-gray-400 mt-1">Original document embedded as supplied. Its content and page order are unchanged.</p>
+                        </div>
+                        <a href="Campus%20Fellowship%20Program.Vicharak%20(3).pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold">
+                            <i class="fa-solid fa-file-pdf"></i> Open Original PDF
+                        </a>
+                    </div>
+                    <iframe title="Original Campus Fellowship Program PDF" src="Campus%20Fellowship%20Program.Vicharak%20(3).pdf" class="w-full rounded-xl border border-bordercol bg-white" style="height: min(82vh, 900px);"></iframe>
+                </section>
+            </section>
+
+            <!-- TAB 4: POINTS & SCORECARD -->
+            <section id="tab-scorecard" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Points & Tracker Scorecard</h2>
+                        <p class="text-sm text-gray-400">Scoring system table and interactive distribution of fellow points.</p>
+                    </div>
+                    <button onclick="openAddPointsModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-lg shadow-blue-500/25 self-start sm:self-auto">
+                        <i class="fa-solid fa-plus"></i> Award Activity Points
+                    </button>
+                </div>
+
+                <!-- Scoring System Table -->
+                <div class="bg-cardbg border border-bordercol rounded-2xl p-6 space-y-4 shadow-xl">
+                    <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-table text-cyan-400"></i> Official Scoring System Reference
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-900/90 text-gray-400 uppercase tracking-wider border-b border-bordercol">
+                                <tr>
+                                    <th class="p-3">Activity Type</th>
+                                    <th class="p-3 text-center">Points Awarded</th>
+                                    <th class="p-3">Requirements & Conditions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-bordercol text-gray-300">
+                                <tr>
+                                    <td class="p-3 font-semibold text-white">Campus Workshop / Activity</td>
+                                    <td class="p-3 text-center text-cyan-400 font-mono font-bold">100 pts</td>
+                                    <td class="p-3">Organized for the campus community</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-white">Solo GitHub Project</td>
+                                    <td class="p-3 text-center text-cyan-400 font-mono font-bold">70 pts</td>
+                                    <td class="p-3">Exclusively built with Vicharak/Shrike products</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-white">Feature Suggestion (Accepted)</td>
+                                    <td class="p-3 text-center text-cyan-400 font-mono font-bold">60 pts</td>
+                                    <td class="p-3">Requires technical team approval</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-white">Technical Blog / Article</td>
+                                    <td class="p-3 text-center text-cyan-400 font-mono font-bold">40 pts</td>
+                                    <td class="p-3">Published on approved platforms</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-white">Documentation Contribution</td>
+                                    <td class="p-3 text-center text-cyan-400 font-mono font-bold">30 pts</td>
+                                    <td class="p-3">High priority across repositories</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-semibold text-white">Bug Report Submission</td>
+                                    <td class="p-3 text-center text-cyan-400 font-mono font-bold">25 pts</td>
+                                    <td class="p-3">Must be verified by technical team</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="bg-cardbg border border-bordercol rounded-2xl overflow-hidden shadow-xl">
+                    <div class="p-4 border-b border-bordercol flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-ranking-star text-amber-400"></i> Fellow Leaderboard (Threshold: 250 pts)
+                        </h3>
+                        <span class="text-xs text-gray-400">Sorted by cumulative points</span>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-900/90 text-gray-400 uppercase tracking-wider border-b border-bordercol">
+                                <tr>
+                                    <th class="p-4">Rank</th>
+                                    <th class="p-4">Fellow Name</th>
+                                    <th class="p-4">Squad</th>
+                                    <th class="p-4 text-center">Activities Logged</th>
+                                    <th class="p-4 text-right">Total Points</th>
+                                    <th class="p-4 text-center">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboard-tbody" class="divide-y divide-bordercol">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="bg-cardbg border border-bordercol rounded-2xl overflow-hidden shadow-xl">
+                    <div class="p-5 border-b border-bordercol flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-white"><i class="fa-solid fa-calendar-week text-cyan-400 mr-2"></i>Weekly Score History</h3>
+                            <p class="text-xs text-gray-400 mt-1">Save a dated snapshot of the full leaderboard every Saturday.</p>
+                        </div>
+                        <button onclick="createWeeklySnapshot(true)" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold">
+                            <i class="fa-solid fa-camera mr-1"></i> Save This Week's Score
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p id="history-status" class="text-xs text-gray-400 mb-3">No weekly snapshots saved yet.</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead class="bg-gray-900/90 text-gray-400 uppercase"><tr>
+                                    <th class="p-3">Week ending</th><th class="p-3 text-right">Total points</th>
+                                    <th class="p-3 text-center">Fellows ≥250</th><th class="p-3 text-center">Fellows recorded</th><th class="p-3">Action</th>
+                                </tr></thead>
+                                <tbody id="weekly-history-tbody" class="divide-y divide-bordercol">
+                                    <tr><td colspan="5" class="p-4 text-center text-gray-500">No history available.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="weekly-history-detail" class="hidden mt-4 p-4 rounded-xl bg-gray-900/70 border border-bordercol"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: REPOSITORIES TRACKER -->
+            <section id="tab-repos" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">Repositories Tracker</h2>
+                        <p class="text-sm text-gray-400">Manage GitHub and GitLab repository submissions for Shrike FI projects.</p>
+                    </div>
+                    <button onclick="openRepoModal()" class="bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-lg shadow-cyan-500/20 self-start sm:self-auto">
+                        <i class="fa-solid fa-link"></i> Submit Repository Link
+                    </button>
+                </div>
+
+                <!-- Repositories Grid -->
+                <div id="repos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Dynamic repo cards -->
+                </div>
+            </section>
+
+            <!-- TAB 6: DSM & REPORTS LOG -->
+            <section id="tab-dsm" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white tracking-tight">DSM & Progress Reports Log</h2>
+                        <p class="text-sm text-gray-400">Daily StandUp meeting logs and progress reports submitted by Scrum Masters.</p>
+                    </div>
+                    <button onclick="openReportModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2.5 rounded-xl text-xs font-semibold transition flex items-center gap-2 shadow-lg shadow-blue-500/20 self-start sm:self-auto">
+                        <i class="fa-solid fa-file-pen"></i> Log DSM & Report
+                    </button>
+                </div>
+
+                <!-- Reports Table -->
+                <div class="bg-cardbg border border-bordercol rounded-2xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-gray-900/90 text-gray-400 uppercase tracking-wider border-b border-bordercol">
+                                <tr>
+                                    <th class="p-4">Cycle / Date</th>
+                                    <th class="p-4">Squad & Scrum Master</th>
+                                    <th class="p-4">Work Completed</th>
+                                    <th class="p-4">Blockers</th>
+                                    <th class="p-4">Next Steps</th>
+                                </tr>
+                            </thead>
+                            <tbody id="reports-tbody" class="divide-y divide-bordercol">
+                                <!-- Dynamic reports -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ERP MODULE: FELLOW DIRECTORY -->
+            <section id="tab-fellows" class="tab-content hidden space-y-6">
+                <div><h2 class="text-2xl font-bold text-white">Fellow Directory</h2><p class="text-sm text-gray-400">Search the existing cohort roster. Team assignments are sourced from the original roster and are not edited here.</p></div>
+                <div class="bg-cardbg border border-bordercol rounded-2xl p-4 flex flex-col sm:flex-row gap-3">
+                    <input id="fellow-search" oninput="renderFellowDirectory()" placeholder="Search fellow name or team..." class="flex-1 bg-gray-900 border border-bordercol rounded-xl px-4 py-3 text-sm text-white" />
+                    <select id="fellow-team-filter" onchange="renderFellowDirectory()" class="bg-gray-900 border border-bordercol rounded-xl px-4 py-3 text-sm text-white"><option value="all">All teams</option><option>Team 1</option><option>Team 2</option><option>Team 3</option><option>Team 4</option><option>Team 5</option><option>Team 6</option><option>Team 7</option></select>
+                </div>
+                <div class="bg-cardbg border border-bordercol rounded-2xl overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-900 text-gray-400"><tr><th class="p-4">#</th><th class="p-4">Fellow</th><th class="p-4">Team</th><th class="p-4">Points</th><th class="p-4">Activities</th></tr></thead><tbody id="fellow-directory-body" class="divide-y divide-bordercol"></tbody></table></div></div>
+            </section>
+
+            <!-- ERP MODULE: ATTENDANCE -->
+            <section id="tab-attendance" class="tab-content hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"><div><h2 class="text-2xl font-bold text-white">Attendance Management</h2><p class="text-sm text-gray-400">Mark and review daily cohort attendance.</p></div><input type="date" id="attendance-date" onchange="renderAttendance()" class="bg-gray-900 border border-bordercol rounded-xl px-3 py-2 text-sm text-white" /></div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4"><div class="bg-cardbg border border-bordercol rounded-2xl p-5"><p class="text-xs text-gray-400">Present</p><h3 id="att-present" class="text-3xl font-bold text-emerald-400">0</h3></div><div class="bg-cardbg border border-bordercol rounded-2xl p-5"><p class="text-xs text-gray-400">Absent</p><h3 id="att-absent" class="text-3xl font-bold text-rose-400">0</h3></div><div class="bg-cardbg border border-bordercol rounded-2xl p-5"><p class="text-xs text-gray-400">Not marked</p><h3 id="att-unmarked" class="text-3xl font-bold text-amber-400">0</h3></div></div>
+                <div class="bg-cardbg border border-bordercol rounded-2xl overflow-hidden"><div class="overflow-x-auto"><table class="w-full text-left text-sm"><thead class="bg-gray-900 text-gray-400"><tr><th class="p-4">Fellow</th><th class="p-4">Team</th><th class="p-4">Attendance</th></tr></thead><tbody id="attendance-body" class="divide-y divide-bordercol"></tbody></table></div></div>
+            </section>
+
+            <!-- ERP MODULE: TASKS -->
+            <section id="tab-tasks" class="tab-content hidden space-y-6">
+                <div><h2 class="text-2xl font-bold text-white">Tasks & Assignments</h2><p class="text-sm text-gray-400">Create tasks, assign them to teams or fellows, and track progress.</p></div>
+                <form onsubmit="addErpTask(event)" class="bg-cardbg border border-bordercol rounded-2xl p-5 grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input id="erp-task-title" required placeholder="Task title" class="bg-gray-900 border border-bordercol rounded-xl px-3 py-3 text-sm text-white" />
+                    <select id="erp-task-assignee" class="bg-gray-900 border border-bordercol rounded-xl px-3 py-3 text-sm text-white"><option value="All Fellows">All Fellows</option><option>Team 1</option><option>Team 2</option><option>Team 3</option><option>Team 4</option><option>Team 5</option><option>Team 6</option><option>Team 7</option></select>
+                    <input id="erp-task-due" type="date" class="bg-gray-900 border border-bordercol rounded-xl px-3 py-3 text-sm text-white" />
+                    <button class="bg-blue-600 hover:bg-blue-500 rounded-xl px-4 py-3 text-sm font-semibold text-white">Add Task</button>
+                </form>
+                <div id="erp-task-list" class="space-y-3"></div>
+            </section>
+
+            <!-- ERP MODULE: ANNOUNCEMENTS -->
+            <section id="tab-announcements" class="tab-content hidden space-y-6">
+                <div><h2 class="text-2xl font-bold text-white">Announcements & Notices</h2><p class="text-sm text-gray-400">Post cohort updates and keep a dated notice board.</p></div>
+                <form onsubmit="addErpAnnouncement(event)" class="bg-cardbg border border-bordercol rounded-2xl p-5 space-y-3"><input id="erp-ann-title" required placeholder="Announcement title" class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-3 text-sm text-white" /><textarea id="erp-ann-body" required rows="3" placeholder="Write announcement..." class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-3 text-sm text-white"></textarea><button class="bg-blue-600 hover:bg-blue-500 rounded-xl px-4 py-3 text-sm font-semibold text-white">Publish Announcement</button></form>
+                <div id="erp-announcement-list" class="space-y-3"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MODAL: AWARD POINTS -->
+    <div id="points-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-cardbg border border-bordercol rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-bordercol pb-3">
+                <h3 class="font-bold text-white text-base">Award Activity Points</h3>
+                <button onclick="closeModal('points-modal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="points-form" onsubmit="handleAwardPoints(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Select Fellow</label>
+                    <select id="point-fellow-select" required class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Activity Type</label>
+                    <select id="point-activity-select" required class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                        <option value="GitHub Project (70 pts)">Solo GitHub Project (70 pts)</option>
+                        <option value="Workshop (100 pts)">Campus Workshop (100 pts)</option>
+                        <option value="Technical Blog (40 pts)">Technical Blog / Article (40 pts)</option>
+                        <option value="Feature Suggestion (60 pts)">Feature Suggestion Accepted (60 pts)</option>
+                        <option value="Documentation (30 pts)">Documentation Contribution (30 pts)</option>
+                        <option value="Bug Report (25 pts)">Bug Report Submission (25 pts)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Notes / Description</label>
+                    <input type="text" id="point-notes" placeholder="e.g. Shrike FI GPIO Driver module" class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-3 border-t border-bordercol">
+                    <button type="button" onclick="closeModal('points-modal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25">Award Points</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SUBMIT REPO -->
+    <div id="repo-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-cardbg border border-bordercol rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-bordercol pb-3">
+                <h3 class="font-bold text-white text-base">Submit Repository Link</h3>
+                <button onclick="closeModal('repo-modal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="repo-form" onsubmit="handleRepoSubmit(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Select Squad</label>
+                    <select id="repo-team-select" required class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500">
+                        <option value="Team 1">Team 1 (SM: Raksha Chourasiya)</option>
+                        <option value="Team 2">Team 2 (SM: Devesh Kumar Shivam)</option>
+                        <option value="Team 3">Team 3 (SM: Khushali Kolhe)</option>
+                        <option value="Team 4">Team 4 (SM: Pushkar Vishwakarma)</option>
+                        <option value="Team 5">Team 5 (SM: Arpit Kumar Thakur)</option>
+                        <option value="Team 6">Team 6 (SM: Aishwarya Sonwane)</option>
+                        <option value="Team 7">Team 7 (SM: Muskan Goswami)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Project Name</label>
+                    <input type="text" id="repo-project-name" required placeholder="e.g. Shrike FI Sensor Node" class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">GitHub / GitLab URL</label>
+                    <input type="url" id="repo-url" required placeholder="https://github.com/Cohart2026/project" class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-cyan-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-3 border-t border-bordercol">
+                    <button type="button" onclick="closeModal('repo-modal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-medium shadow-lg shadow-cyan-500/25">Save Repository</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SUBMIT REPORT / DSM -->
+    <div id="report-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-cardbg border border-bordercol rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
+            <div class="flex items-center justify-between border-b border-bordercol pb-3">
+                <h3 class="font-bold text-white text-base">Log DSM & Progress Report</h3>
+                <button onclick="closeModal('report-modal')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <form id="report-form" onsubmit="handleReportSubmit(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-1">Squad</label>
+                        <select id="report-team" required class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                            <option value="Team 1">Team 1 (Raksha)</option>
+                            <option value="Team 2">Team 2 (Devesh)</option>
+                            <option value="Team 3">Team 3 (Khushali)</option>
+                            <option value="Team 4">Team 4 (Pushkar)</option>
+                            <option value="Team 5">Team 5 (Arpit)</option>
+                            <option value="Team 6">Team 6 (Aishwarya)</option>
+                            <option value="Team 7">Team 7 (Muskan G.)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 font-medium mb-1">Cycle / Phase</label>
+                        <input type="text" id="report-cycle" required placeholder="Sprint Phase 1" class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Work Completed</label>
+                    <textarea id="report-work" rows="2" required placeholder="Summarize completed embedded work..." class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Blockers / Challenges</label>
+                    <textarea id="report-blockers" rows="2" required placeholder="Any hardware or compilation blockers..." class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+                <div>
+                    <label class="block text-gray-300 font-medium mb-1">Next Steps / Plan</label>
+                    <textarea id="report-next" rows="2" required placeholder="Goals for next cycle..." class="w-full bg-gray-900 border border-bordercol rounded-xl px-3 py-2.5 text-white focus:outline-none focus:border-blue-500"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-3 border-t border-bordercol">
+                    <button type="button" onclick="closeModal('report-modal')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded-xl font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium shadow-lg shadow-blue-500/25">Submit Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Application JavaScript -->
+    <script>
+        // Roster and Initial State Data for 7 Squads (35 Fellows)
+        const initialTeams = [
+            {
+                name: "Team 1",
+                scrumMaster: "Raksha Chourasiya",
+                members: ["Lakshy Rajput", "Pranshu Rahangdale", "Deepak Tomar", "Muskan Katre"]
+            },
+            {
+                name: "Team 2",
+                scrumMaster: "Devesh Kumar Shivam",
+                members: ["Sohan Malviya", "Sourabh Bisen", "Sanu Patle", "Aaditya Kumar"]
+            },
+            {
+                name: "Team 3",
+                scrumMaster: "Khushali Kolhe",
+                members: ["Tanmay Mohanty", "Chakit Rahangdale", "Vikash Kumar", "Mahima Barpete"]
+            },
+            {
+                name: "Team 4",
+                scrumMaster: "Pushkar Vishwakarma",
+                members: ["Priya Ahirwar", "Sohan Talodiya", "Ayush Rathore", "Mansi Ahirwar"]
+            },
+            {
+                name: "Team 5",
+                scrumMaster: "Arpit Kumar Thakur",
+                members: ["Janvi Mathankar", "Swati Kushwaha", "Himanshu Solanki", "Kajal Kumari"]
+            },
+            {
+                name: "Team 6",
+                scrumMaster: "Aishwarya Sonwane",
+                members: ["Om Bhadd", "Anshu Baghel", "Siddharth Lodhi", "Devesh Sharma"]
+            },
+            {
+                name: "Team 7",
+                scrumMaster: "Muskan Goswami",
+                members: ["Gopal Shilpi", "Krati Vishwakarma", "Chandan Kumar", "Kajal Patle"]
+            }
+        ];
+
+        // 35 Fellows List
+        let studentsData = [
+            { name: "Raksha Chourasiya", team: "Team 1", points: 0, activities: 0 },
+            { name: "Devesh Kumar Shivam", team: "Team 2", points: 0, activities: 0 },
+            { name: "Khushali Kolhe", team: "Team 3", points: 0, activities: 0 },
+            { name: "Pushkar Vishwakarma", team: "Team 4", points: 0, activities: 0 },
+            { name: "Arpit Kumar Thakur", team: "Team 5", points: 0, activities: 0 },
+            { name: "Aishwarya Sonwane", team: "Team 6", points: 0, activities: 0 },
+            { name: "Muskan Goswami", team: "Team 7", points: 0, activities: 0 },
+            { name: "Kajal Patle", team: "Team 7", points: 0, activities: 0 },
+            { name: "Priya Ahirwar", team: "Team 4", points: 0, activities: 0 },
+            { name: "Mansi Ahirwar", team: "Team 4", points: 0, activities: 0 },
+            { name: "Ayush Rathore", team: "Team 4", points: 0, activities: 0 },
+            { name: "Tanmay Mohanty", team: "Team 3", points: 0, activities: 0 },
+            { name: "Vikash Kumar", team: "Team 3", points: 0, activities: 0 },
+            { name: "Mahima Barpete", team: "Team 3", points: 0, activities: 0 },
+            { name: "Lakshy Rajput", team: "Team 1", points: 0, activities: 0 },
+            { name: "Pranshu Rahangdale", team: "Team 1", points: 0, activities: 0 },
+            { name: "Deepak Tomar", team: "Team 1", points: 0, activities: 0 },
+            { name: "Muskan Katre", team: "Team 1", points: 0, activities: 0 },
+            { name: "Sohan Malviya", team: "Team 2", points: 0, activities: 0 },
+            { name: "Sourabh Bisen", team: "Team 2", points: 0, activities: 0 },
+            { name: "Sanu Patle", team: "Team 2", points: 0, activities: 0 },
+            { name: "Aaditya Kumar", team: "Team 2", points: 0, activities: 0 },
+            { name: "Chakit Rahangdale", team: "Team 3", points: 0, activities: 0 },
+            { name: "Kajal Kumari", team: "Team 5", points: 0, activities: 0 },
+            { name: "Sohan Talodiya", team: "Team 4", points: 0, activities: 0 },
+            { name: "Janvi Mathankar", team: "Team 5", points: 0, activities: 0 },
+            { name: "Swati Kushwaha", team: "Team 5", points: 0, activities: 0 },
+            { name: "Himanshu Solanki", team: "Team 5", points: 0, activities: 0 },
+            { name: "Om Bhadd", team: "Team 6", points: 0, activities: 0 },
+            { name: "Anshu Baghel", team: "Team 6", points: 0, activities: 0 },
+            { name: "Siddharth Lodhi", team: "Team 6", points: 0, activities: 0 },
+            { name: "Devesh Sharma", team: "Team 6", points: 0, activities: 0 },
+            { name: "Gopal Shilpi", team: "Team 7", points: 0, activities: 0 },
+            { name: "Krati Vishwakarma", team: "Team 7", points: 0, activities: 0 },
+            { name: "Chandan Kumar", team: "Team 7", points: 0, activities: 0 }
+        ];
+
+        let reposData = [
+            { team: "Team 1", project: "Shrike FI GPIO Controller", url: "https://github.com/Cohart2026/team1-gpio", status: "Verified" },
+            { team: "Team 2", project: "Edge AI Sensor Node", url: "https://gitlab.com/Cohart2026/team2-sensor", status: "Verified" },
+            { team: "Team 3", project: "UART Serial Communication", url: "https://github.com/Cohart2026/team3-uart", status: "Verified" },
+            { team: "Team 4", project: "Embedded C Motor Control", url: "https://github.com/Cohart2026/team4-motor", status: "Pending Review" },
+            { team: "Team 5", project: "Linux Kernel Module Logger", url: "https://gitlab.com/Cohart2026/team5-kernel", status: "Verified" },
+            { team: "Team 6", project: "I2C Temperature Monitor", url: "https://github.com/Cohart2026/team6-i2c", status: "Pending Review" },
+            { team: "Team 7", project: "Capstone AI Vision Prototype", url: "https://github.com/Cohart2026/team7-vision", status: "Verified" }
+        ];
+
+        let reportsData = [
+            { cycle: "Sprint Phase 1", team: "Team 1 (Raksha)", work: "Completed WSL2 setup & digital logic simulations.", blockers: "GCC toolchain path configuration resolved.", next: "Begin Embedded C GPIO register programming." },
+            { cycle: "Sprint Phase 1", team: "Team 3 (Khushali)", work: "Initialized GitLab repository & structured project README.", blockers: "None.", next: "Implement UART peripheral drivers." },
+            { cycle: "Sprint Phase 1", team: "Team 7 (Muskan G.)", work: "Completed Digital Primer documentation review.", blockers: "Driver compatibility check.", next: "Shrike FI hardware testing session." }
+        ];
+
+        let weeklyHistory = [];
+        let attendanceData = JSON.parse(localStorage.getItem('coh_erp_attendance') || '{}');
+        let erpTasks = JSON.parse(localStorage.getItem('coh_erp_tasks') || '[]');
+        let erpAnnouncements = JSON.parse(localStorage.getItem('coh_erp_announcements') || '[]');
+
+        // Local Storage Initialization
+        function initStorage() {
+            if (localStorage.getItem('coh_students')) studentsData = JSON.parse(localStorage.getItem('coh_students'));
+            if (localStorage.getItem('coh_repos')) reposData = JSON.parse(localStorage.getItem('coh_repos'));
+            if (localStorage.getItem('coh_reports')) reportsData = JSON.parse(localStorage.getItem('coh_reports'));
+            if (localStorage.getItem('coh_weekly_history')) weeklyHistory = JSON.parse(localStorage.getItem('coh_weekly_history'));
+
+            // One-time initialization for this version: start every fellow at zero.
+            if (localStorage.getItem('coh_zero_scores_initialized_v3') !== 'yes') {
+                studentsData = studentsData.map(student => ({ ...student, points: 0, activities: 0 }));
+                localStorage.setItem('coh_zero_scores_initialized_v3', 'yes');
+                saveStorage();
+            }
+        }
+
+        function saveStorage() {
+            localStorage.setItem('coh_students', JSON.stringify(studentsData));
+            localStorage.setItem('coh_repos', JSON.stringify(reposData));
+            localStorage.setItem('coh_reports', JSON.stringify(reportsData));
+            localStorage.setItem('coh_weekly_history', JSON.stringify(weeklyHistory));
+        }
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/30');
+                el.classList.add('text-gray-400');
+            });
+
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('bg-blue-600/10', 'text-blue-400', 'border', 'border-blue-500/30');
+            activeBtn.classList.remove('text-gray-400');
+        }
+
+        function renderAll() {
+            renderTeams('all');
+            renderLeaderboard();
+            renderRepos();
+            renderReports();
+            populateDropdowns();
+            updateStats();
+            renderWeeklyHistory();
+            renderFellowDirectory();
+            renderAttendance();
+            renderErpTasks();
+            renderErpAnnouncements();
+        }
+
+        function updateStats() {
+            const totalPts = studentsData.reduce((acc, curr) => acc + curr.points, 0);
+            document.getElementById('stat-total-points').innerText = totalPts.toLocaleString();
+        }
+
+        function filterTeams() {
+            const filterVal = document.getElementById('team-filter').value;
+            renderTeams(filterVal);
+        }
+
+        function renderTeams(filter) {
+            const grid = document.getElementById('teams-grid');
+            const filtered = filter === 'all' ? initialTeams : initialTeams.filter(t => t.name === filter);
+
+            grid.innerHTML = filtered.map(t => `
+                <div class="bg-cardbg border border-bordercol p-5 rounded-2xl flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs uppercase font-bold text-cyan-400 bg-cyan-950 px-2.5 py-1 rounded-lg border border-cyan-900">${t.name}</span>
+                            <span class="text-xs text-gray-400">5 Members</span>
+                        </div>
+                        <h4 class="text-sm font-semibold text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-user-shield text-amber-400"></i> SM: ${t.scrumMaster}
+                        </h4>
+                        <div class="space-y-1 mt-3">
+                            <span class="text-[11px] font-medium text-gray-500 uppercase tracking-wider">Squad Fellows:</span>
+                            <ul class="text-xs text-gray-300 space-y-1 pl-2">
+                                ${t.members.map(m => `<li class="flex items-center gap-1.5"><i class="fa-solid fa-circle text-[4px] text-cyan-500"></i> ${m}</li>`).join('')}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="pt-3 border-t border-bordercol flex items-center justify-between text-xs text-gray-400">
+                        <span>Shrike FI Ready</span>
+                        <span class="text-emerald-400"><i class="fa-solid fa-circle-check"></i> Active</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderLeaderboard() {
+            studentsData.sort((a, b) => b.points - a.points);
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = studentsData.map((s, index) => {
+                const rank = index + 1;
+                const meetsThreshold = s.points >= 250;
+                let rankBadge = `<span class="font-mono font-bold text-gray-400">#${rank}</span>`;
+                if (rank === 1) rankBadge = `<span class="bg-amber-500/20 text-amber-400 border border-amber-500/40 px-2 py-0.5 rounded-md font-bold">#1</span>`;
+                if (rank === 2) rankBadge = `<span class="bg-gray-300/20 text-gray-200 border border-gray-400/40 px-2 py-0.5 rounded-md font-bold">#2</span>`;
+                if (rank === 3) rankBadge = `<span class="bg-amber-700/20 text-amber-500 border border-amber-700/40 px-2 py-0.5 rounded-md font-bold">#3</span>`;
+
+                return `
+                    <tr class="hover:bg-gray-900/40 transition">
+                        <td class="p-4">${rankBadge}</td>
+                        <td class="p-4 font-semibold text-white">${s.name}</td>
+                        <td class="p-4 text-gray-400">${s.team}</td>
+                        <td class="p-4 text-center text-gray-300">${s.activities} logs</td>
+                        <td class="p-3 text-right">
+                            <div class="flex items-center justify-end gap-2">
+                                <input type="number" min="0" step="1" value="${Number(s.points) || 0}"
+                                    aria-label="Edit points for ${s.name}"
+                                    title="Edit this score, then press Enter or click outside to save" onkeydown="if(event.key==='Enter'){this.blur();}"
+                                    onchange="updateStudentScore(${JSON.stringify(s.name)}, this.value)"
+                                    class="w-24 bg-gray-900 border border-gray-700 focus:border-cyan-500 rounded-lg px-2 py-2 text-right font-mono font-bold text-cyan-300 text-sm outline-none">
+                                <span class="text-xs text-gray-500">pts</span>
+                            </div>
+                        </td>
+                        <td class="p-4 text-center">
+                            ${meetsThreshold ? 
+                                '<span class="px-2.5 py-1 bg-emerald-950 text-emerald-400 border border-emerald-900 rounded-lg text-[11px] font-medium"><i class="fa-solid fa-check"></i> Eligible (≥250)</span>' : 
+                                '<span class="px-2.5 py-1 bg-rose-950 text-rose-400 border border-rose-900 rounded-lg text-[11px] font-medium"><i class="fa-solid fa-triangle-exclamation"></i> Below Threshold</span>'
+                            }
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function updateStudentScore(studentName, rawValue) {
+            const score = Number(rawValue);
+            if (!Number.isFinite(score) || score < 0 || !Number.isInteger(score)) {
+                showToast('Please enter a whole number of 0 or more.');
+                renderLeaderboard();
+                return;
+            }
+            const student = studentsData.find(item => item.name === studentName);
+            if (!student) return;
+            student.points = score;
+            saveStorage();
+            renderLeaderboard();
+            updateStats();
+            showToast(`Saved ${score} points for ${studentName}.`);
+        }
+
+        function renderRepos() {
+            const grid = document.getElementById('repos-grid');
+            grid.innerHTML = reposData.map(r => `
+                <div class="bg-cardbg border border-bordercol p-5 rounded-2xl flex flex-col justify-between space-y-4">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-semibold text-blue-400 bg-blue-950 px-2.5 py-1 rounded-lg border border-blue-900">${r.team}</span>
+                            <span class="text-xs ${r.status === 'Verified' ? 'text-emerald-400 bg-emerald-950 border border-emerald-900' : 'text-amber-400 bg-amber-950 border border-amber-900'} px-2.5 py-1 rounded-lg">${r.status}</span>
+                        </div>
+                        <h4 class="text-sm font-bold text-white mt-2">${r.project}</h4>
+                        <p class="text-xs text-gray-400 mt-1 truncate font-mono">${r.url}</p>
+                    </div>
+                    <div class="pt-3 border-t border-bordercol flex items-center justify-between">
+                        <a href="${r.url}" target="_blank" class="text-xs text-cyan-400 hover:text-cyan-300 flex items-center gap-1.5 font-medium">
+                            <i class="fa-solid fa-code-branch"></i> Visit Repository
+                        </a>
+                        <button onclick="toggleRepoStatus('${r.project}')" class="text-xs text-gray-400 hover:text-white bg-gray-800 px-2.5 py-1 rounded-lg">
+                            Toggle Status
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderReports() {
+            const tbody = document.getElementById('reports-tbody');
+            tbody.innerHTML = reportsData.map(rep => `
+                <tr class="hover:bg-gray-900/40 transition">
+                    <td class="p-4 font-semibold text-cyan-400">${rep.cycle}</td>
+                    <td class="p-4 text-white">${rep.team}</td>
+                    <td class="p-4 text-gray-300">${rep.work}</td>
+                    <td class="p-4 text-rose-400">${rep.blockers}</td>
+                    <td class="p-4 text-emerald-400">${rep.next}</td>
+                </tr>
+            `).join('');
+        }
+
+        function populateDropdowns() {
+            const select = document.getElementById('point-fellow-select');
+            select.innerHTML = studentsData.map(s => `<option value="${s.name}">${s.name} (${s.team})</option>`).join('');
+        }
+
+
+        // Weekly score history
+        function localDateKey(date = new Date()) {
+            return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+        }
+
+        function saturdayWeekKey(date = new Date()) {
+            const daysSinceSaturday = (date.getDay() + 1) % 7;
+            const saturday = new Date(date);
+            saturday.setDate(date.getDate() - daysSinceSaturday);
+            return localDateKey(saturday);
+        }
+
+        function createWeeklySnapshot(manual = false) {
+            const weekEnding = saturdayWeekKey();
+            const snapshot = {
+                weekEnding,
+                savedAt: new Date().toISOString(),
+                totalPoints: studentsData.reduce((sum, s) => sum + Number(s.points || 0), 0),
+                eligibleCount: studentsData.filter(s => Number(s.points || 0) >= 250).length,
+                fellowCount: studentsData.length,
+                students: [...studentsData].sort((a,b) => b.points-a.points).map(s => ({...s}))
+            };
+            const existing = weeklyHistory.findIndex(item => item.weekEnding === weekEnding);
+            if (existing >= 0) {
+                if (!manual) return;
+                weeklyHistory[existing] = snapshot;
+            } else {
+                weeklyHistory.push(snapshot);
+            }
+            weeklyHistory.sort((a,b) => b.weekEnding.localeCompare(a.weekEnding));
+            saveStorage();
+            renderWeeklyHistory();
+            showToast(`Weekly score snapshot saved for ${weekEnding}.`);
+        }
+
+        function renderWeeklyHistory() {
+            const tbody = document.getElementById('weekly-history-tbody');
+            const status = document.getElementById('history-status');
+            if (!tbody || !status) return;
+            status.textContent = `${weeklyHistory.length} weekly snapshot(s) saved in this browser.`;
+            if (!weeklyHistory.length) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No history available. Save your first snapshot.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = weeklyHistory.map((item, index) => `
+                <tr class="hover:bg-gray-900/40">
+                    <td class="p-3 text-white">${item.weekEnding}</td>
+                    <td class="p-3 text-right font-mono text-cyan-400">${Number(item.totalPoints || 0).toLocaleString()}</td>
+                    <td class="p-3 text-center text-emerald-400">${item.eligibleCount || 0}</td>
+                    <td class="p-3 text-center text-gray-300">${item.fellowCount || (item.students || []).length}</td>
+                    <td class="p-3"><button onclick="viewWeeklySnapshot(${index})" class="text-cyan-400 hover:text-cyan-300">View details</button></td>
+                </tr>`).join('');
+        }
+
+        function viewWeeklySnapshot(index) {
+            const item = weeklyHistory[index];
+            const panel = document.getElementById('weekly-history-detail');
+            if (!item || !panel) return;
+            panel.classList.remove('hidden');
+            panel.innerHTML = `
+                <div class="flex justify-between items-center gap-3 mb-3">
+                    <h4 class="text-sm font-bold text-white">Leaderboard — week ending ${item.weekEnding}</h4>
+                    <button onclick="document.getElementById('weekly-history-detail').classList.add('hidden')" class="text-xs text-gray-400">Close</button>
+                </div>
+                <div class="overflow-x-auto"><table class="w-full text-left text-xs">
+                    <thead class="text-gray-400"><tr><th class="py-2">Rank</th><th class="py-2">Fellow</th><th class="py-2">Squad</th><th class="py-2 text-right">Points</th></tr></thead>
+                    <tbody class="divide-y divide-gray-800">
+                    ${(item.students || []).map((s, i) => `<tr><td class="py-2 text-gray-400">#${i+1}</td><td class="py-2 text-white">${s.name}</td><td class="py-2 text-gray-400">${s.team}</td><td class="py-2 text-right font-mono text-cyan-400">${s.points} pts</td></tr>`).join('')}
+                    </tbody>
+                </table></div>`;
+        }
+
+        // ERP modules: data stays separate from the original team and fellow roster.
+        function persistErpData() {
+            localStorage.setItem('coh_erp_attendance', JSON.stringify(attendanceData));
+            localStorage.setItem('coh_erp_tasks', JSON.stringify(erpTasks));
+            localStorage.setItem('coh_erp_announcements', JSON.stringify(erpAnnouncements));
+        }
+        function renderFellowDirectory() {
+            const body = document.getElementById('fellow-directory-body'); if (!body) return;
+            const q = (document.getElementById('fellow-search')?.value || '').toLowerCase();
+            const team = document.getElementById('fellow-team-filter')?.value || 'all';
+            const rows = studentsData.filter(s => (team === 'all' || s.team === team) && (s.name.toLowerCase().includes(q) || s.team.toLowerCase().includes(q)));
+            body.innerHTML = rows.map((s,i)=>`<tr><td class="p-4 text-gray-500">${i+1}</td><td class="p-4 font-medium text-white">${s.name}</td><td class="p-4 text-cyan-300">${s.team}</td><td class="p-4">${s.points}</td><td class="p-4">${s.activities}</td></tr>`).join('') || '<tr><td colspan="5" class="p-5 text-center text-gray-500">No fellows found.</td></tr>';
+        }
+        function attendanceDateKey() { return document.getElementById('attendance-date')?.value || new Date().toISOString().slice(0,10); }
+        function renderAttendance() {
+            const body = document.getElementById('attendance-body'); if (!body) return;
+            const date = attendanceDateKey(); if (!attendanceData[date]) attendanceData[date] = {};
+            let present=0, absent=0, unmarked=0;
+            body.innerHTML = studentsData.map(s => {
+                const status = attendanceData[date][s.name] || 'Not marked';
+                if(status==='Present') present++; else if(status==='Absent') absent++; else unmarked++;
+                return `<tr><td class="p-4 text-white">${s.name}</td><td class="p-4 text-gray-400">${s.team}</td><td class="p-4"><select onchange="setAttendance('${s.name.replace(/'/g, "\\'")}',this.value)" class="bg-gray-900 border border-bordercol rounded-lg px-3 py-2 text-sm text-white"><option ${status==='Not marked'?'selected':''}>Not marked</option><option ${status==='Present'?'selected':''}>Present</option><option ${status==='Absent'?'selected':''}>Absent</option></select></td></tr>`;
+            }).join('');
+            document.getElementById('att-present').textContent=present; document.getElementById('att-absent').textContent=absent; document.getElementById('att-unmarked').textContent=unmarked;
+        }
+        function setAttendance(name,status) { const date=attendanceDateKey(); if(!attendanceData[date]) attendanceData[date]={}; if(status==='Not marked') delete attendanceData[date][name]; else attendanceData[date][name]=status; persistErpData(); renderAttendance(); }
+        function addErpTask(e) { e.preventDefault(); erpTasks.unshift({id:Date.now(),title:document.getElementById('erp-task-title').value.trim(),assignee:document.getElementById('erp-task-assignee').value,due:document.getElementById('erp-task-due').value,status:'Pending'}); persistErpData(); e.target.reset(); renderErpTasks(); showToast('Task added.'); }
+        function renderErpTasks() { const el=document.getElementById('erp-task-list'); if(!el)return; el.innerHTML=erpTasks.map(t=>`<div class="bg-cardbg border border-bordercol rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><h3 class="font-semibold text-white">${escapeErp(t.title)}</h3><p class="text-xs text-gray-400 mt-1">Assigned: ${escapeErp(t.assignee)} · Due: ${t.due || 'Not set'}</p></div><div class="flex items-center gap-2"><select onchange="updateErpTask(${t.id},this.value)" class="bg-gray-900 border border-bordercol rounded-lg px-3 py-2 text-xs text-white"><option ${t.status==='Pending'?'selected':''}>Pending</option><option ${t.status==='In Progress'?'selected':''}>In Progress</option><option ${t.status==='Completed'?'selected':''}>Completed</option></select><button onclick="deleteErpTask(${t.id})" class="text-rose-400 px-2" title="Delete task"><i class="fa-solid fa-trash"></i></button></div></div>`).join('') || '<div class="bg-cardbg border border-bordercol rounded-xl p-6 text-sm text-gray-500 text-center">No tasks yet. Add the first task above.</div>'; }
+        function updateErpTask(id,status) { const t=erpTasks.find(x=>x.id===id); if(t){t.status=status;persistErpData();renderErpTasks();} }
+        function deleteErpTask(id) { if(confirm('Delete this task?')){erpTasks=erpTasks.filter(x=>x.id!==id);persistErpData();renderErpTasks();} }
+        function addErpAnnouncement(e) { e.preventDefault(); erpAnnouncements.unshift({id:Date.now(),title:document.getElementById('erp-ann-title').value.trim(),body:document.getElementById('erp-ann-body').value.trim(),date:new Date().toLocaleString()}); persistErpData(); e.target.reset(); renderErpAnnouncements(); showToast('Announcement published.'); }
+        function renderErpAnnouncements() {
+            const adminList = document.getElementById('erp-announcement-list');
+            const dashboardList = document.getElementById('dashboard-announcement-list');
+            const adminEmpty = '<div class="bg-cardbg border border-bordercol rounded-xl p-6 text-sm text-gray-500 text-center">No announcements posted yet.</div>';
+            const dashboardEmpty = '<div class="rounded-xl border border-bordercol bg-gray-900/40 p-4 text-sm text-gray-500 md:col-span-2">No announcements posted yet.</div>';
+            const adminHtml = erpAnnouncements.map(a => `<article class="bg-cardbg border border-bordercol rounded-xl p-5"><div class="flex justify-between gap-3"><h3 class="font-semibold text-white">${escapeErp(a.title)}</h3><button onclick="deleteErpAnnouncement(${a.id})" class="text-rose-400" title="Delete announcement"><i class="fa-solid fa-trash"></i></button></div><p class="text-sm text-gray-300 mt-2 whitespace-pre-wrap">${escapeErp(a.body)}</p><p class="text-xs text-gray-500 mt-3">${escapeErp(a.date)}</p></article>`).join('');
+            const dashboardHtml = erpAnnouncements.slice(0, 4).map(a => `<article class="rounded-xl border border-bordercol bg-gray-900/40 p-4"><h4 class="font-semibold text-white text-sm">${escapeErp(a.title)}</h4><p class="text-sm text-gray-300 mt-2 whitespace-pre-wrap">${escapeErp(a.body)}</p><p class="text-xs text-gray-500 mt-3">${escapeErp(a.date)}</p></article>`).join('');
+            if (adminList) adminList.innerHTML = adminHtml || adminEmpty;
+            if (dashboardList) dashboardList.innerHTML = dashboardHtml || dashboardEmpty;
+        }
+        function deleteErpAnnouncement(id) { if(confirm('Delete this announcement?')){erpAnnouncements=erpAnnouncements.filter(a=>a.id!==id);persistErpData();renderErpAnnouncements();} }
+        function escapeErp(value) { return String(value ?? '').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+        // Modal Controls
+        function openAddPointsModal() { document.getElementById('points-modal').classList.remove('hidden'); }
+        function openRepoModal() { document.getElementById('repo-modal').classList.remove('hidden'); }
+        function openReportModal() { document.getElementById('report-modal').classList.remove('hidden'); }
+        function closeModal(modalId) { document.getElementById(modalId).classList.add('hidden'); }
+
+        // Form Handlers
+        function handleAwardPoints(e) {
+            e.preventDefault();
+            const name = document.getElementById('point-fellow-select').value;
+            const activityType = document.getElementById('point-activity-select').value;
+            
+            let pts = 30;
+            if (activityType.includes('70')) pts = 70;
+            if (activityType.includes('100')) pts = 100;
+            if (activityType.includes('40')) pts = 40;
+            if (activityType.includes('60')) pts = 60;
+            if (activityType.includes('25')) pts = 25;
+
+            const student = studentsData.find(s => s.name === name);
+            if (student) {
+                student.points += pts;
+                student.activities += 1;
+                saveStorage();
+                renderAll();
+                closeModal('points-modal');
+                showToast(`Awarded ${pts} points to ${name}!`);
+            }
+        }
+
+        function handleRepoSubmit(e) {
+            e.preventDefault();
+            const team = document.getElementById('repo-team-select').value;
+            const project = document.getElementById('repo-project-name').value;
+            const url = document.getElementById('repo-url').value;
+
+            reposData.push({ team, project, url, status: "Pending Review" });
+            saveStorage();
+            renderRepos();
+            closeModal('repo-modal');
+            document.getElementById('repo-form').reset();
+            showToast('Repository submitted successfully!');
+        }
+
+        function handleReportSubmit(e) {
+            e.preventDefault();
+            const team = document.getElementById('report-team').value;
+            const cycle = document.getElementById('report-cycle').value;
+            const work = document.getElementById('report-work').value;
+            const blockers = document.getElementById('report-blockers').value;
+            const next = document.getElementById('report-next').value;
+
+            reportsData.unshift({ cycle, team, work, blockers, next });
+            saveStorage();
+            renderReports();
+            closeModal('report-modal');
+            document.getElementById('report-form').reset();
+            showToast('DSM Report logged successfully!');
+        }
+
+        function toggleRepoStatus(projectName) {
+            const repo = reposData.find(r => r.project === projectName);
+            if (repo) {
+                repo.status = repo.status === 'Verified' ? 'Pending Review' : 'Verified';
+                saveStorage();
+                renderRepos();
+                showToast(`Repository status updated for ${projectName}`);
+            }
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-message').innerText = msg;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function exportData() {
+            const data = { students: studentsData, repos: reposData, reports: reportsData, weeklyHistory, attendanceData, erpTasks, erpAnnouncements };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Internal-Internship-Cohart2026_backup.json';
+            a.click();
+            showToast('Backup exported successfully!');
+        }
+
+        function resetData() {
+            if (confirm('Are you sure you want to reset local storage to default state?')) {
+                ['coh_students', 'coh_repos', 'coh_reports', 'coh_weekly_history', 'coh_erp_attendance', 'coh_erp_tasks', 'coh_erp_announcements'].forEach(key => localStorage.removeItem(key));
+                location.reload();
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            initStorage();
+            const dateInput = document.getElementById('attendance-date'); if (dateInput) dateInput.value = new Date().toISOString().slice(0,10);
+            renderAll();
+            if (new Date().getDay() === 6) createWeeklySnapshot(false);
+        };
+    </script>
+</body>
+</html>
